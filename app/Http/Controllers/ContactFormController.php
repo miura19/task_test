@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ContactForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\CheckFormData;
 
 class ContactFormController extends Controller
 {
@@ -15,10 +16,7 @@ class ContactFormController extends Controller
      */
     public function index()
     {
-        // $contact = ContactForm::all();
-        // dd($contact);
         $contacts = DB::table('contact_forms')->select('id','your_name','title','created_at')->get();
-        // dd($contact);
         return view('contact.index',compact('contacts'));
     }
 
@@ -59,34 +57,13 @@ class ContactFormController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id,CheckFormData $CheckFormData)
     {
         $contact =  ContactForm::find($id);
 
-        if ($contact->gender === 0){
-            $gender = "男性";
-        } else {
-            $gender = "女性";
-        }
-
-        if ($contact->age === 1){
-            $age = '~19歳';
-        }
-        if ($contact->age === 2){
-            $age = '20~29歳';
-        }
-        if ($contact->age === 3){
-            $age = '30~39歳';
-        }
-        if ($contact->age === 4){
-            $age = '40~49歳';
-        }
-        if ($contact->age === 5){
-            $age = '50~59歳';
-        }
-        if ($contact->age === 6){
-            $age = '60~歳';
-        }
+        $gender = $CheckFormData->checkGender($contact->gender);
+        $age = $CheckFormData->checkAge($contact->age);
+        
         return view('contact.show',compact('contact','gender','age'));
     }
 
