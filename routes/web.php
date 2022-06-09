@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ContactFormController;
+use App\Models\ContactForm;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,5 +22,10 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::group(['prefix' => 'contact','middleware' => 'auth'],function(){
+    Route::get('index',[ContactFormController::class,'index'])->name('contact.index');
+
+});
 
 require __DIR__.'/auth.php';
