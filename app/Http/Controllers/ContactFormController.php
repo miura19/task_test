@@ -19,8 +19,6 @@ class ContactFormController extends Controller
     {
         $search = $request->input('search');
 
-
-        
         $query = DB::table('contact_forms');
         if ($search !== null ){
             $search_split = mb_convert_kana($search,'s');
