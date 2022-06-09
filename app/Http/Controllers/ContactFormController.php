@@ -15,9 +15,22 @@ class ContactFormController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contacts = DB::table('contact_forms')->select('id','your_name','title','created_at')->get();
+        $search = $request->input('search');
+
+
+        
+        $query = DB::table('contact_forms');
+        if ($search !== null ){
+            $search_split = mb_convert_kana($search,'s');
+        }
+        
+        $query->select('id','your_name','title','created_at')
+        ->where('your_name','like','%' . $search . '%')
+        ->orderBy('created_at','asc');
+        $contacts = $query->paginate(20);
+
         return view('contact.index',compact('contacts'));
     }
 
